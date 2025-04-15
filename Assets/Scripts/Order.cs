@@ -9,10 +9,6 @@ public class Order : MonoBehaviour
     int originOrder;
 
 
-  private void Start()
-  {
-    SetOrder(0);
-  }
 
   public void SetOriginOrder(int originOrder)
   {

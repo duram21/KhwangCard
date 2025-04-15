@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CardManager : MonoBehaviour
@@ -7,6 +8,10 @@ public class CardManager : MonoBehaviour
   void Awake() => Inst = this;
 
   [SerializeField] ItemSO itemSO;
+  [SerializeField] GameObject cardPrefab;
+  [SerializeField] List<Card> myCards;
+  [SerializeField] List<Card> otherCards;
+  [SerializeField] Transform cardSpawnPoint;
 
   List<Item> itemBuffer;
 
@@ -49,6 +54,42 @@ public class CardManager : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Keypad1))
-          print(PopItem().name);
+          AddCard(true);
+        
+        if(Input.GetKeyDown(KeyCode.Keypad2)){
+          AddCard(false);
+        }
+    }
+
+    void AddCard(bool isMine)
+    {
+      var cardObject = Instantiate(cardPrefab, cardSpawnPoint.position, Utils.QI);
+      var card = cardObject.GetComponent<Card>();
+      card.Setup(PopItem(), isMine);
+      (isMine ? myCards : otherCards).Add(card);
+
+      SetOriginOrder(isMine);
+      CardAlignment(isMine);
+    }
+
+    void SetOriginOrder(bool isMine){
+      int count = isMine ? myCards.Count : otherCards.Count;
+      for(int i = 0 ; i < count; i++)
+      {
+        var targetCard = isMine ? myCards[i] : otherCards[i];
+        targetCard?.GetComponent<Order>().SetOriginOrder(i);
+      }
+    }
+
+    void CardAlignment(bool isMine)
+    {
+      var targetCards = isMine ? myCards : otherCards;
+      for(int i = 0 ; i < targetCards.Count; i++)
+      {
+        var targetCard = targetCards[i];
+
+        targetCard.originPRS = new PRS(Vector3.zero, Utils.QI, Vector3.one * 1.9f);
+        targetCard.MoveTransform(targetCard.originPRS, true, 0.7f);
+      }
     }
 }
