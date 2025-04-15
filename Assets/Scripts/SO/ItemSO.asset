@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41895749b94b0c44a97767a01ae8aebf, type: 3}
+  m_Name: ItemSO
+  m_EditorClassIdentifier: 
+  items:
+  - name: "\uB8E8\uB124\uCF54"
+    attack: 2
+    health: 5
+    sprite: {fileID: -8889724304206743998, guid: fcebc8ecc93463241930890a4697f37e, type: 3}
+    percent: 12
+  - name: "\uB204\uBAA8"
+    attack: 1
+    health: 7
+    sprite: {fileID: 342125266448510365, guid: 9899b87a17fb6d04d86e4287b652d9ff, type: 3}
+    percent: 10
+  - name: "\uB514\uB2C8\uC5D0"
+    attack: 4
+    health: 4
+    sprite: {fileID: 8212243934860688624, guid: 5531abcbf9dd54f4b9e190e82d0f883c, type: 3}
+    percent: 10
+  - name: "\uB77C\uB2C8\uC5D8"
+    attack: 1
+    health: 4
+    sprite: {fileID: -986269431848802616, guid: 8af16620295445545af42300d9662180, type: 3}
+    percent: 15
+  - name: "\uB8E8\uB370\uB098"
+    attack: 1
+    health: 3
+    sprite: {fileID: 6033015158452083991, guid: 490104efec3ce8744b4a5713d033d873, type: 3}
+    percent: 15
+  - name: "\uB9AC\uCF54"
+    attack: 3
+    health: 4
+    sprite: {fileID: -7957815128316257246, guid: dfc06602bc55f894898e223db8870f7c, type: 3}
+    percent: 8
+  - name: "\uCCB4\uB9AC"
+    attack: 4
+    health: 5
+    sprite: {fileID: -5690490679025498215, guid: 9c8907ccd8e40b849bcf83ca4393972e, type: 3}
+    percent: 10
+  - name: "\uCF08\uD2B8"
+    attack: 3
+    health: 4
+    sprite: {fileID: 3352117543114240019, guid: 372632543a3f1f940bcfcaa62cba1e20, type: 3}
+    percent: 8
+  - name: "\uD504\uB9AC\uB098"
+    attack: 3
+    health: 4
+    sprite: {fileID: -8124414658673018810, guid: c56fd5cd008453845a7bc99a79ec0c9f, type: 3}
+    percent: 8
+  - name: "\uD0C0\uC774\uAC70"
+    attack: 4
+    health: 8
+    sprite: {fileID: -394916818267346488, guid: d991afc7754be2643b656ac579d853ea, type: 3}
+    percent: 4
