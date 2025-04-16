@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CardManager : MonoBehaviour
 {
@@ -18,10 +19,15 @@ public class CardManager : MonoBehaviour
     [SerializeField] Transform otherCardLeft;
 
     [SerializeField] Transform otherCardRight;
+    [SerializeField] ECardState eCardState;
 
 
 
     List<Item> itemBuffer;
+    Card selectCard;
+    bool isMyCardDrag;
+    bool onMyCardArea;
+    enum ECardState {Nothing, CanMouseOver, CanMouseDrag}
 
     public Item PopItem()
     {
@@ -68,8 +74,13 @@ public class CardManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(isMyCardDrag)
+            CardDrag();
+        
+        DetectCardArea();
+        SetECardState();
     }
+
 
     void AddCard(bool isMine)
     {
@@ -155,12 +166,49 @@ public class CardManager : MonoBehaviour
 
     public void CardMouseOver(Card card)
     {
+        if(eCardState == ECardState.Nothing) return;
+
+        selectCard = card;
         EnlargeCard(true, card);
     }
 
     public void CardMouseExit(Card card)
     {
         EnlargeCard(false, card);
+    }
+
+    public void CardMouseDown()
+    {
+        if(eCardState != ECardState.CanMouseDrag){
+            return;
+        }
+        isMyCardDrag = true;
+    }
+
+    public void CardMouseUp()
+    {
+        isMyCardDrag = false;
+
+        if(eCardState != ECardState.CanMouseDrag){
+            return;
+        }
+
+        
+    }
+
+    void CardDrag()
+    {
+        if(!onMyCardArea)
+        {
+            selectCard.MoveTransform(new PRS(Utils.MousePos, Utils.QI, selectCard.originPRS.scale), false);
+        }
+    }
+
+    void DetectCardArea()
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(Utils.MousePos, Vector3.forward);
+        int layer = LayerMask.NameToLayer("MyCardArea");
+        onMyCardArea = Array.Exists(hits, x => x.collider.gameObject.layer == layer);
     }
 
     void EnlargeCard(bool isEnlarge, Card card)
@@ -174,6 +222,16 @@ public class CardManager : MonoBehaviour
             card.MoveTransform(card.originPRS, false);
         
         card.GetComponent<Order>().SetMostFrontOrder(isEnlarge);
+    }
+
+    void SetECardState()
+    {
+        if(TurnManager.Inst.isLoading)
+            eCardState = ECardState.Nothing;
+        else if(!TurnManager.Inst.myTurn)
+            eCardState = ECardState.CanMouseOver;
+        else if(TurnManager.Inst.myTurn)
+            eCardState = ECardState.CanMouseDrag;
     }
 
     #endregion
