@@ -21,7 +21,7 @@ MonoBehaviour:
   - name: "\uB204\uBAA8"
     attack: 1
     health: 7
-    sprite: {fileID: 342125266448510365, guid: 9899b87a17fb6d04d86e4287b652d9ff, type: 3}
+    sprite: {fileID: -4855178247118869083, guid: 9899b87a17fb6d04d86e4287b652d9ff, type: 3}
     percent: 10
   - name: "\uB514\uB2C8\uC5D0"
     attack: 4
