@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class EntityManager : MonoBehaviour
 {
@@ -21,6 +23,8 @@ public class EntityManager : MonoBehaviour
     bool IsFullOtherEntities => otherEntities.Count >= MAX_ENTITY_COUNT;
     bool ExistMyEmptyEntity => myEntities.Exists(x => x == myEmptyEntity);
     int MyEmptyEntityIndex => myEntities.FindIndex(x => x == myEmptyEntity);
+
+    WaitForSeconds delay1 = new WaitForSeconds(1);
 
 
     void EntityAlignment(bool isMine)
@@ -94,12 +98,31 @@ public class EntityManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        TurnManager.OnTurnStarted += OnTurnStarted;
+    }
+    void OnDestroy()
+    {
+        TurnManager.OnTurnStarted -= OnTurnStarted;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void OnTurnStarted(bool myTurn)
+    {
+        if(!myTurn)
+            StartCoroutine(AICo());
+    }
+
+    IEnumerator AICo()
+    {
+        CardManager.Inst.TryPutCard(false);
+        yield return delay1;
+
+        // 공격 로직
+        TurnManager.Inst.EndTurn();
     }
 }
