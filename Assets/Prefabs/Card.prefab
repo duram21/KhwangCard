@@ -451,6 +451,7 @@ GameObject:
   - component: {fileID: 7666265104862287688}
   - component: {fileID: 5241775452397998873}
   - component: {fileID: 3674471711473400269}
+  - component: {fileID: 7037890910782792263}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -581,6 +582,61 @@ MonoBehaviour:
   - {fileID: 2720534375128482946}
   - {fileID: 908519731204733144}
   sortingLayerName: Card
+--- !u!60 &7037890910782792263
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4954634720159378662}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.9375, y: 3.875}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -1.46875, y: 1.9375}
+      - {x: -1.46875, y: -1.9375}
+      - {x: -0.8461395, y: -1.919122}
+      - {x: -0.6888574, y: -2.7531462}
+      - {x: 0.47900134, y: -2.787643}
+      - {x: 0.6392409, y: -1.9161702}
+      - {x: 1.46875, y: -1.9375}
+      - {x: 1.46875, y: 1.9375}
+  m_UseDelaunayMesh: 0
 --- !u!1 &5268869833370638897
 GameObject:
   m_ObjectHideFlags: 0

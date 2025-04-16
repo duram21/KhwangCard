@@ -35,18 +35,6 @@ public class Card : MonoBehaviour
       }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void MoveTransform(PRS prs, bool useDotween, float dotweenTime = 0)
     {
       if(useDotween)
@@ -61,5 +49,17 @@ public class Card : MonoBehaviour
         transform.rotation = prs.rot;
         transform.localScale = prs.scale;
       }
+    }
+
+    void OnMouseOver()
+    {
+        if(isFront)
+            CardManager.Inst.CardMouseOver(this);
+    }
+
+    void OnMouseExit()
+    {
+        if(isFront)
+            CardManager.Inst.CardMouseExit(this);   
     }
 }
