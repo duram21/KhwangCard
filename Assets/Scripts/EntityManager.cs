@@ -13,6 +13,7 @@ public class EntityManager : MonoBehaviour
     [SerializeField] GameObject entityPrefab;
     [SerializeField] List<Entity> myEntities;
     [SerializeField] List<Entity> otherEntities;
+    [SerializeField] GameObject TargetPicker;
     [SerializeField] Entity myEmptyEntity;
     [SerializeField] Entity myBossEntity;
 
@@ -21,9 +22,13 @@ public class EntityManager : MonoBehaviour
     const int MAX_ENTITY_COUNT = 6;
     public bool IsFullMyEntities => myEntities.Count >= MAX_ENTITY_COUNT && !ExistMyEmptyEntity;
     bool IsFullOtherEntities => otherEntities.Count >= MAX_ENTITY_COUNT;
+    bool ExistTargetPickEntity => targetPickEntity != null;
     bool ExistMyEmptyEntity => myEntities.Exists(x => x == myEmptyEntity);
     int MyEmptyEntityIndex => myEntities.FindIndex(x => x == myEmptyEntity);
+    bool CanMouseInput => TurnManager.Inst.myTurn && !TurnManager.Inst.isLoading;
 
+    Entity selectEntity;
+    Entity targetPickEntity;
     WaitForSeconds delay1 = new WaitForSeconds(1);
 
 
@@ -95,6 +100,50 @@ public class EntityManager : MonoBehaviour
         return true;
     }
 
+    public void EntityMouseDown(Entity entity)
+    {
+        if(!CanMouseInput)
+            return;
+
+        selectEntity = entity;
+    }
+
+    public void EntityMouseUp()
+    {
+        if(!CanMouseInput)
+            return;
+        
+        selectEntity = null;
+        targetPickEntity = null;
+    }
+
+    public void EntityMouseDrag()
+    {
+        if(!CanMouseInput || selectEntity == null)
+            return;
+
+        // other 타겟엔티티 찾기
+        bool existTarget = false;
+        foreach ( var hit in Physics2D.RaycastAll(Utils.MousePos, Vector3.forward))
+        {
+            Entity entity = hit.collider?.GetComponent<Entity>();
+            if(entity != null && !entity.isMine && selectEntity.attackable)
+            {
+                targetPickEntity = entity;
+                existTarget= true;
+                break;
+            }
+        }
+        if(!existTarget)
+            targetPickEntity = null;
+    }
+
+    public void AttackableReset(bool isMine)
+    {
+        var targetEntities = isMine  ? myEntities : otherEntities;
+        targetEntities.ForEach(x => x.attackable = true);
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -108,11 +157,20 @@ public class EntityManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        ShowTargetPicker(ExistTargetPickEntity);
+    }
+
+    void ShowTargetPicker(bool isShow)
+    {
+        TargetPicker.SetActive(isShow);
+        if(ExistTargetPickEntity)
+            TargetPicker.transform.position = targetPickEntity.transform.position;
     }
 
     void OnTurnStarted(bool myTurn)
     {
+        AttackableReset(myTurn);
+
         if(!myTurn)
             StartCoroutine(AICo());
     }
@@ -125,4 +183,5 @@ public class EntityManager : MonoBehaviour
         // 공격 로직
         TurnManager.Inst.EndTurn();
     }
+
 }
