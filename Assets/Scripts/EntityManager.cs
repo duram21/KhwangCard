@@ -31,6 +31,7 @@ public class EntityManager : MonoBehaviour
     Entity selectEntity;
     Entity targetPickEntity;
     WaitForSeconds delay1 = new WaitForSeconds(1);
+    WaitForSeconds delay2 = new WaitForSeconds(2);
 
 
     void EntityAlignment(bool isMine)
@@ -175,6 +176,27 @@ public class EntityManager : MonoBehaviour
         yield return delay1;
 
         // 공격 로직
+        var attackers = new List<Entity>(otherEntities.FindAll(x =>x.attackable == true));
+        for(int i = 0 ; i < attackers.Count; i++)
+        {
+            int rand = Random.Range(i, attackers.Count);
+            Entity temp = attackers[i];
+            attackers[i] = attackers[rand];
+            attackers[rand]= temp;
+        }
+
+        foreach (var attacker in attackers)
+        {
+            var defenders = new List<Entity>(myEntities);
+            defenders.Add(myBossEntity);
+            int rand = Random.Range(0, defenders.Count);
+            Attack(attacker, defenders[rand]);
+
+            if(TurnManager.Inst.isLoading)
+                yield break;
+            yield return delay2;
+        }
+
         TurnManager.Inst.EndTurn();
     }
 
@@ -237,6 +259,8 @@ public class EntityManager : MonoBehaviour
                     Destroy(entity.gameObject);
                 });
         }
+
+        StartCoroutine(CheckBossDie());
     }
 
     void SpawnDamage(int damage, Transform tr)
@@ -247,5 +271,24 @@ public class EntityManager : MonoBehaviour
         var damageComponent = Instantiate(damagePrefab).GetComponent<Damage>();
         damageComponent.SetupTransform(tr);
         damageComponent.Damaged(damage);
+    }
+
+    IEnumerator CheckBossDie()
+    {
+        yield return delay2;
+
+        if(myBossEntity.isDie)
+            StartCoroutine(GameManager.Inst.GameOver(false));
+        
+        if(otherBossEntity.isDie)
+            StartCoroutine(GameManager.Inst.GameOver(true));
+        
+    }
+
+    public void DamageBoss(bool isMine, int damage)
+    {
+        var targetBossEntity = isMine ? myBossEntity : otherBossEntity;
+        targetBossEntity.Damaged(damage);
+        StartCoroutine(CheckBossDie());
     }
 }
