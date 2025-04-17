@@ -211,7 +211,32 @@ public class EntityManager : MonoBehaviour
                 SpawnDamage(attacker.attack, defender.transform);
             })
             .Append(attacker.transform.DOMove(attacker.originPos, 0.4f)).SetEase(Ease.OutSine)
-            .OnComplete(() => { }); // 죽음
+            .OnComplete(() => AttackCallback(attacker, defender)); // 죽음
+    }
+
+    void AttackCallback(params Entity[] entities)
+    {
+        // 죽을 사람 판단
+        entities[0].GetComponent<Order>().SetMostFrontOrder(false);
+
+        foreach( var entity in entities){
+            if(!entity.isDie || entity.isBossOrEmpty)
+                continue;
+            
+            if(entity.isMine)
+                myEntities.Remove(entity);
+            else   
+                otherEntities.Remove(entity);
+            
+            Sequence sequence = DOTween.Sequence()
+                .Append(entity.transform.DOShakePosition(1.3f))
+                .Append(entity.transform.DOScale(Vector3.zero, 0.3f)).SetEase(Ease.OutCirc)
+                .OnComplete(() =>
+                {
+                    EntityAlignment(entity.isMine);
+                    Destroy(entity.gameObject);
+                });
+        }
     }
 
     void SpawnDamage(int damage, Transform tr)
