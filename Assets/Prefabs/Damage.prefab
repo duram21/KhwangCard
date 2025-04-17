@@ -295,4 +295,4 @@ MonoBehaviour:
   - {fileID: 131060116506599597}
   middleRenderers:
   - {fileID: 6259345833243879888}
-  sortingLayerName: 
+  sortingLayerName: Entity
