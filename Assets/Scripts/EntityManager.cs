@@ -11,6 +11,7 @@ public class EntityManager : MonoBehaviour
     void Awake() => Inst = this;
 
     [SerializeField] GameObject entityPrefab;
+    [SerializeField] GameObject damagePrefab;
     [SerializeField] List<Entity> myEntities;
     [SerializeField] List<Entity> otherEntities;
     [SerializeField] GameObject TargetPicker;
@@ -205,9 +206,21 @@ public class EntityManager : MonoBehaviour
                 // 데미지 주고받기
                 attacker.Damaged(defender.attack);
                 defender.Damaged(attacker.attack);
+
+                SpawnDamage(defender.attack, attacker.transform);
+                SpawnDamage(attacker.attack, defender.transform);
             })
             .Append(attacker.transform.DOMove(attacker.originPos, 0.4f)).SetEase(Ease.OutSine)
             .OnComplete(() => { }); // 죽음
     }
 
+    void SpawnDamage(int damage, Transform tr)
+    {
+        if(damage <= 0)
+            return;
+
+        var damageComponent = Instantiate(damagePrefab).GetComponent<Damage>();
+        damageComponent.SetupTransform(tr);
+        damageComponent.Damaged(damage);
+    }
 }
