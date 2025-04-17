@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Animations;
+using DG.Tweening;
 
 public class EntityManager : MonoBehaviour
 {
@@ -113,6 +113,11 @@ public class EntityManager : MonoBehaviour
         if(!CanMouseInput)
             return;
         
+        // selectEntity, targetPickEntity 둘다 존재하면 공격, null null
+        
+        if(selectEntity && targetPickEntity && selectEntity.attackable)
+            Attack(selectEntity, targetPickEntity);
+
         selectEntity = null;
         targetPickEntity = null;
     }
@@ -154,18 +159,6 @@ public class EntityManager : MonoBehaviour
         TurnManager.OnTurnStarted -= OnTurnStarted;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        ShowTargetPicker(ExistTargetPickEntity);
-    }
-
-    void ShowTargetPicker(bool isShow)
-    {
-        TargetPicker.SetActive(isShow);
-        if(ExistTargetPickEntity)
-            TargetPicker.transform.position = targetPickEntity.transform.position;
-    }
 
     void OnTurnStarted(bool myTurn)
     {
@@ -182,6 +175,39 @@ public class EntityManager : MonoBehaviour
 
         // 공격 로직
         TurnManager.Inst.EndTurn();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        ShowTargetPicker(ExistTargetPickEntity);
+    }
+
+    
+
+    void ShowTargetPicker(bool isShow)
+    {
+        TargetPicker.SetActive(isShow);
+        if(ExistTargetPickEntity)
+            TargetPicker.transform.position = targetPickEntity.transform.position;
+    }
+
+    void Attack(Entity attacker, Entity defender)
+    {
+        // attacker가 defender의 위치로 이동하고 원래 위치로 이동, 이떄 order 높게 설정
+        attacker.attackable = false;
+        attacker.GetComponent<Order>().SetMostFrontOrder(true);
+
+        Sequence sequcne = DOTween.Sequence()
+            .Append(attacker.transform.DOMove(defender.originPos, 0.4f)).SetEase(Ease.InSine)
+            .AppendCallback(() =>
+            {
+                // 데미지 주고받기
+                attacker.Damaged(defender.attack);
+                defender.Damaged(attacker.attack);
+            })
+            .Append(attacker.transform.DOMove(attacker.originPos, 0.4f)).SetEase(Ease.OutSine)
+            .OnComplete(() => { }); // 죽음
     }
 
 }
